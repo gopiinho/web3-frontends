@@ -1,6 +1,27 @@
+'use client'
+import { useReadContract } from 'wagmi'
 import Messages from '@/components/messages'
+import { chatroomAbi } from '@/utils/chatroomAbi'
+
+const CONTRACT_ADDRESS = '0x515Bcc986E17FDbd38FBb3585f12D1D4b53ecE66'
 
 export default function Write() {
+  const {
+    data: allMessages,
+    isFetching: isFetchingMessages,
+    refetch: refetchMessages,
+    isError,
+    error,
+  } = useReadContract({
+    abi: chatroomAbi,
+    address: CONTRACT_ADDRESS,
+    args: [],
+    functionName: 'getAllMessages',
+  })
+
+  console.log('Messages:', allMessages)
+  console.log('Is fetching:', isFetchingMessages)
+  console.log('Error:', error)
   return (
     <div className="flex w-full flex-col items-center justify-center gap-10">
       <h3 className="text-4xl opacity-75">Write to smart contracts</h3>
@@ -18,8 +39,19 @@ export default function Write() {
             </span>
           </div>
           <div className="flex flex-col">
-            <Messages sender="Vitalik" message="Hello my first message" />
-            <Messages sender="Vitalik" message="Hello" />
+            {isFetchingMessages ? (
+              'Loading...'
+            ) : allMessages ? (
+              allMessages.map((msg, index) => (
+                <Messages
+                  key={index}
+                  sender={msg.sender}
+                  message={msg.message}
+                />
+              ))
+            ) : (
+              <div className="text-white/50">No messages yet</div>
+            )}
           </div>
         </div>
       </div>
