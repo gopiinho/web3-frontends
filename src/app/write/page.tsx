@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { useReadContract } from 'wagmi'
+import { useReadContract, useWriteContract } from 'wagmi'
 import Messages from '@/components/messages'
 import { chatroomAbi } from '@/utils/chatroomAbi'
 
@@ -8,6 +8,7 @@ const CONTRACT_ADDRESS = '0x515Bcc986E17FDbd38FBb3585f12D1D4b53ecE66'
 
 export default function Write() {
   const [message, setMessage] = useState('')
+  const { writeContract, isPending: isPendingMessage } = useWriteContract()
 
   const {
     data: allMessages,
@@ -21,9 +22,15 @@ export default function Write() {
     functionName: 'getAllMessages',
   })
 
-  console.log('Messages:', allMessages)
-  console.log('Is fetching:', isFetchingMessages)
-  console.log('Error:', error)
+  function sendMessage(message: string) {
+    writeContract({
+      abi: chatroomAbi,
+      address: CONTRACT_ADDRESS,
+      functionName: 'sendMessage',
+      args: [message],
+    })
+  }
+
   return (
     <div className="flex w-full flex-col items-center justify-center gap-10">
       <h3 className="text-4xl opacity-75">Write to smart contracts</h3>
@@ -36,8 +43,11 @@ export default function Write() {
             placeholder="Type your message..."
           />
         </div>
-        <button className="mx-auto max-w-[200px] rounded-lg border border-white/55 px-8 py-2 duration-200 hover:border-white/85 hover:bg-zinc-800/40">
-          Send Message
+        <button
+          onClick={() => sendMessage(message)}
+          className="mx-auto max-w-[200px] rounded-lg border border-white/55 px-8 py-2 duration-200 hover:border-white/85 hover:bg-zinc-800/40"
+        >
+          {isPendingMessage ? 'Sending...' : 'Send Message'}
         </button>
         <div className="mt-8 flex w-full flex-col gap-2">
           <div className="flex w-full flex-col gap-2">
