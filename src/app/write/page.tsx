@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import { useReadContract, useWriteContract } from 'wagmi'
+import { redirect } from 'next/navigation'
+import { useReadContract, useWriteContract, useAccount } from 'wagmi'
 import Messages from '@/components/messages'
 import { chatroomAbi } from '@/utils/chatroomAbi'
 
@@ -8,6 +9,7 @@ const CONTRACT_ADDRESS = '0x515Bcc986E17FDbd38FBb3585f12D1D4b53ecE66'
 
 export default function Write() {
   const [message, setMessage] = useState('')
+  const { isConnected } = useAccount()
   const { writeContract, isPending: isPendingMessage } = useWriteContract()
 
   const {
@@ -43,12 +45,22 @@ export default function Write() {
             placeholder="Type your message..."
           />
         </div>
-        <button
-          onClick={() => sendMessage(message)}
-          className="mx-auto max-w-[200px] rounded-lg border border-white/55 px-8 py-2 duration-200 hover:border-white/85 hover:bg-zinc-800/40"
-        >
-          {isPendingMessage ? 'Sending...' : 'Send Message'}
-        </button>
+        {isConnected ? (
+          <button
+            onClick={() => sendMessage(message)}
+            className="mx-auto max-w-[200px] rounded-lg border border-white/55 px-8 py-2 duration-200 hover:border-white/85 hover:bg-zinc-800/40"
+          >
+            {isPendingMessage ? 'Sending...' : 'Send Message'}
+          </button>
+        ) : (
+          <button
+            onClick={() => redirect('/connect')}
+            className="mx-auto max-w-[200px] rounded-lg border border-white/55 px-8 py-2 duration-200 hover:border-white/85 hover:bg-zinc-800/40"
+          >
+            Connect Wallet
+          </button>
+        )}
+
         <div className="mt-8 flex w-full flex-col gap-2">
           <div className="flex w-full flex-col gap-2">
             <span className="w-full text-start text-lg font-bold opacity-60">
