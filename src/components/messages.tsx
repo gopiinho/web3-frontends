@@ -1,7 +1,7 @@
 import { Address } from 'viem'
 
 type Props = {
-  sender: string
+  sender: Address
   message: string
 }
 

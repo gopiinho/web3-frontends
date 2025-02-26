@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { redirect } from 'next/navigation'
 import { useReadContract, useWriteContract, useAccount } from 'wagmi'
-import Messages from '@/components/messages'
+import MessagesList from '@/components/messages-list'
 import { chatroomAbi } from '@/utils/chatroomAbi'
 
 const CONTRACT_ADDRESS = '0x515Bcc986E17FDbd38FBb3585f12D1D4b53ecE66'
@@ -11,18 +11,6 @@ export default function Write() {
   const [message, setMessage] = useState('')
   const { isConnected } = useAccount()
   const { writeContract, isPending: isPendingMessage } = useWriteContract()
-
-  const {
-    data: allMessages,
-    isFetching: isFetchingMessages,
-    refetch: refetchMessages,
-    error,
-  } = useReadContract({
-    abi: chatroomAbi,
-    address: CONTRACT_ADDRESS,
-    args: [],
-    functionName: 'getAllMessages',
-  })
 
   function sendMessage(message: string) {
     writeContract({
@@ -60,29 +48,7 @@ export default function Write() {
             Connect Wallet
           </button>
         )}
-
-        <div className="mt-8 flex w-full flex-col gap-2">
-          <div className="flex w-full flex-col gap-2">
-            <span className="w-full text-start text-lg font-bold opacity-60">
-              Messages
-            </span>
-          </div>
-          <div className="flex flex-col">
-            {isFetchingMessages ? (
-              'Loading...'
-            ) : allMessages ? (
-              allMessages.map((msg, index) => (
-                <Messages
-                  key={index}
-                  sender={msg.sender}
-                  message={msg.message}
-                />
-              ))
-            ) : (
-              <div className="text-white/50">No messages yet</div>
-            )}
-          </div>
-        </div>
+        <MessagesList />
       </div>
     </div>
   )
