@@ -30,4 +30,13 @@ yarn add wagmi viem@2.x @tanstack/react-query
 
 ### [2. Reading data from smart contracts.](https://www.youtube.com/watch?v=V4lmN-NZVO0)
 
-### 3. Sending transactions / writing to smart contracts.
+##### Hooks Used:
+
+- [useBalance](https://wagmi.sh/react/api/hooks/useBalance#usebalance)
+- [useReadContract](https://wagmi.sh/react/api/hooks/useReadContract)
+
+### [3. Sending transactions / writing to smart contracts.](https://www.youtube.com/watch?v=OGOWmT1JRYM)
+
+##### Hooks Used:
+
+- [useWriteContract](https://wagmi.sh/react/api/hooks/useWriteContract)
